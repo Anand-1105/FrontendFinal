@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FuturePath Mentor</title>
+    <meta name="description" content="AI-powered career counseling for students" />
+    <meta name="author" content="Lovable" />
+    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              primary: "#4F46E5",
+              secondary: "#10B981",
+              accent: "#8B5CF6",
+              neutral: "#1F2937",
+              "light-gray": "#F3F4F6",
+            }
+          }
+        }
+      }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+      .dark {
+        color-scheme: dark;
+      }
+      .dark body {
+        background-color: #1F2937;
+        color: #F9FAFB;
+      }
+      /* Add specific dark mode overrides */
+      .dark .bg-white {
+        background-color: #1F2937 !important;
+      }
+      .dark .bg-gray-50 {
+        background-color: #111827 !important;
+      }
+      .dark .text-gray-900 {
+        color: #F9FAFB !important;
+      }
+      .dark .border-gray-200 {
+        border-color: #374151 !important;
+      }
+      .dark .shadow-md {
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+      }
+      .dark input, .dark textarea, .dark select {
+        background-color: #374151 !important;
+        border-color: #4B5563 !important;
+        color: #F9FAFB !important;
+      }
+      .dark label {
+        color: #F9FAFB !important;
+      }
+      .dark p {
+        color: #E5E7EB !important;
+      }
+      .dark h2, .dark h3 {
+        color: #F9FAFB !important;
+      }
+      /* Additional dark mode styles for specific elements */
+      .dark .bg-gradient-to-r {
+        background-image: none !important;
+      }
+      .dark .from-blue-50, 
+      .dark .via-indigo-50, 
+      .dark .to-purple-50 {
+        background-image: linear-gradient(to right, #1A1F2C, #221F26, #403E43) !important;
+      }
+      .dark .bg-blue-100 {
+        background-color: #3B4866 !important;
+      }
+      .dark .bg-blue-500 {
+        background-color: #3B82F6 !important;
+      }
+      .dark .bg-primary-50 {
+        background-color: #3E4C6E !important;
+      }
+      .dark .text-gray-500 {
+        color: #9CA3AF !important;
+      }
+      .dark .text-gray-600 {
+        color: #D1D5DB !important;
+      }
+      .dark .bg-primary {
+        background-color: #4F46E5 !important;
+      }
+    </style>
+    <!-- Required Lovable script tag -->
+    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+  </head>
+
+  <body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <!-- Dark mode script -->
+    <script>
+      // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+      if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    </script>
+    
+    <!-- Navigation -->
+    <nav class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 fixed w-full z-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+          <div class="flex">
+            <div class="flex-shrink-0 flex items-center">
+              <span class="text-2xl font-bold text-primary dark:text-white">FuturePath<span class="text-secondary">Mentor</span></span>
+            </div>
+            <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+              <a href="index.html" class="border-primary text-gray-900 dark:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Home</a>
+              <a href="aptitude-test.php" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Aptitude Test</a>
+              <a href="career-paths.php" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Career Paths</a>
+              <a href="ai-counselor.php" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">AI Counselor</a>
+            </div>
+          </div>
+          <div class="hidden sm:ml-6 sm:flex sm:items-center space-x-4">
+            <button id="theme-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">
+              <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+              </svg>
+              <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+              </svg>
+            </button>
+            <a href="sign-in.php" class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-md text-sm font-medium">Sign In</a>
+          </div>
+          <div class="-mr-2 flex items-center sm:hidden">
+            <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary" aria-controls="mobile-menu" aria-expanded="false" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+              <span class="sr-only">Open main menu</span>
+              <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile menu, show/hide based on menu state. -->
+      <div class="sm:hidden hidden" id="mobile-menu">
+        <div class="pt-2 pb-3 space-y-1">
+          <a href="index.html" class="bg-primary-50 border-primary text-primary block pl-3 pr-4 py-2 border-l-4 text-base font-medium dark:text-white">Home</a>
+          <a href="aptitude-test.php" class="border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-medium dark:text-gray-300 dark:hover:bg-gray-700">Aptitude Test</a>
+          <a href="career-paths.php" class="border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-medium dark:text-gray-300 dark:hover:bg-gray-700">Career Paths</a>
+          <a href="ai-counselor.php" class="border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800 block pl-3 pr-4 py-2 border-l-4 text-base font-medium dark:text-gray-300 dark:hover:bg-gray-700">AI Counselor</a>
+        </div>
+        <div class="pt-4 pb-3 border-t border-gray-200 dark:border-gray-700">
+          <div class="flex items-center px-4">
+            <div class="flex items-center space-x-4">
+              <button id="mobile-theme-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">
+                <svg id="mobile-theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                </svg>
+                <svg id="mobile-theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+                </svg>
+              </button>
+              <a href="sign-in.php" class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-md text-sm font-medium w-full text-center">Sign In</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="pt-16">
+      <div class="relative bg-white dark:bg-gray-800 overflow-hidden">
+        <div class="max-w-7xl mx-auto">
+          <div class="relative z-10 pb-8 bg-white dark:bg-gray-800 sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
+            <main class="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
+              <div class="sm:text-center lg:text-left">
+                <h1 class="text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white sm:text-5xl md:text-6xl">
+                  <span class="block xl:inline">Shape Your Future</span>
+                  <span class="block text-primary xl:inline"> With Confidence</span>
+                </h1>
+                <p class="mt-3 text-base text-gray-500 dark:text-gray-300 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
+                  Discover your perfect career path with our AI-powered guidance system. Get personalized recommendations, explore career options, and make informed decisions about your future.
+                </p>
+                <div class="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
+                  <div class="rounded-md shadow">
+                    <a href="aptitude-test.php" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary hover:bg-primary/90 md:py-4 md:text-lg md:px-10">
+                      Take Aptitude Test
+                    </a>
+                  </div>
+                  <div class="mt-3 sm:mt-0 sm:ml-3">
+                    <a href="ai-counselor.php" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-primary bg-primary/10 hover:bg-primary/20 md:py-4 md:text-lg md:px-10">
+                      Talk to AI Counselor
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </main>
+          </div>
+        </div>
+        <div class="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
+          <img class="h-56 w-full object-cover sm:h-72 md:h-96 lg:w-full lg:h-full" src="https://images.unsplash.com/photo-1529390079861-591de354faf5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1050&q=80" alt="Students planning their future">
+        </div>
+      </div>
+    </div>
+    
+    <!-- Features Section -->
+    <div class="py-12 bg-white dark:bg-gray-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="lg:text-center">
+          <h2 class="text-base text-primary font-semibold tracking-wide uppercase">Features</h2>
+          <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+            Everything you need to plan your career
+          </p>
+          <p class="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
+            Our platform provides comprehensive tools to help you make informed career decisions.
+          </p>
+        </div>
+
+        <div class="mt-10">
+          <div class="space-y-10 md:space-y-0 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10">
+            <div class="relative">
+              <div class="absolute flex items-center justify-center h-12 w-12 rounded-md bg-primary text-white">
+                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
+              <div class="ml-16">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Aptitude Assessment</h3>
+                <p class="mt-2 text-base text-gray-500">
+                  Comprehensive tests to identify your strengths, weaknesses, interests, and aptitudes.
+                </p>
+              </div>
+            </div>
+
+            <div class="relative">
+              <div class="absolute flex items-center justify-center h-12 w-12 rounded-md bg-primary text-white">
+                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                </svg>
+              </div>
+              <div class="ml-16">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">AI Career Counselor</h3>
+                <p class="mt-2 text-base text-gray-500">
+                  Get personalized advice from our AI counselor based on your test results and interests.
+                </p>
+              </div>
+            </div>
+
+            <div class="relative">
+              <div class="absolute flex items-center justify-center h-12 w-12 rounded-md bg-primary text-white">
+                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              </div>
+              <div class="ml-16">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Career Path Exploration</h3>
+                <p class="mt-2 text-base text-gray-500">
+                  Explore detailed information about various career paths, including requirements, job prospects, and salary expectations.
+                </p>
+              </div>
+            </div>
+
+            <div class="relative">
+              <div class="absolute flex items-center justify-center h-12 w-12 rounded-md bg-primary text-white">
+                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 9 19c1.747 0 3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+              </div>
+              <div class="ml-16">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Educational Resources</h3>
+                <p class="mt-2 text-base text-gray-500">
+                  Access a library of resources about different career options, academic paths, and skill development opportunities.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Testimonials -->
+    <div class="bg-gray-50 dark:bg-gray-900 py-12">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center">
+          <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">Success Stories</h2>
+          <p class="mt-4 text-lg text-gray-500 dark:text-gray-300">See how FuturePathMentor has helped students find their dream careers</p>
+        </div>
+        <div class="mt-10 grid gap-8 md:grid-cols-3">
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <p class="text-gray-600 mb-4">"The aptitude test gave me insights about my strengths that I never considered before. It helped me choose a career path that aligns with my natural abilities."</p>
+            <div class="flex items-center">
+              <div class="w-10 h-10 bg-gray-300 rounded-full mr-4"></div>
+              <div>
+                <p class="font-medium">Sarah Johnson</p>
+                <p class="text-sm text-gray-500">High School Student</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <p class="text-gray-600 mb-4">"I was confused about which career to pursue. The AI counselor asked me the right questions and provided personalized suggestions that really helped."</p>
+            <div class="flex items-center">
+              <div class="w-10 h-10 bg-gray-300 rounded-full mr-4"></div>
+              <div>
+                <p class="font-medium">Michael Chen</p>
+                <p class="text-sm text-gray-500">College Freshman</p>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <p class="text-gray-600 mb-4">"The detailed career path information helped me understand what education and skills I need to develop to reach my dream job. Very comprehensive!"</p>
+            <div class="flex items-center">
+              <div class="w-10 h-10 bg-gray-300 rounded-full mr-4"></div>
+              <div>
+                <p class="font-medium">Emma Rodriguez</p>
+                <p class="text-sm text-gray-500">High School Senior</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Call to Action -->
+    <div class="bg-primary">
+      <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-between">
+        <h2 class="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+          <span class="block">Ready to discover your ideal career path?</span>
+          <span class="block text-primary-100">Start your journey today - It's free!</span>
+        </h2>
+        <div class="mt-8 flex lg:mt-0 lg:flex-shrink-0 space-x-4">
+          <div class="inline-flex rounded-md shadow">
+            <a href="aptitude-test.php" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-primary bg-white hover:bg-gray-50">
+              Take Free Assessment
+            </a>
+          </div>
+          <div class="inline-flex rounded-md shadow">
+            <a href="career-paths.php" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-dark hover:bg-primary-darker">
+              Explore Careers
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-neutral dark:bg-gray-800">
+      <div class="max-w-7xl mx-auto py-12 px-4 overflow-hidden sm:px-6 lg:px-8">
+        <nav class="-mx-5 -my-2 flex flex-wrap justify-center" aria-label="Footer">
+          <div class="px-5 py-2">
+            <a href="#" class="text-base text-gray-300 hover:text-white">Home</a>
+          </div>
+          <div class="px-5 py-2">
+            <a href="#" class="text-base text-gray-300 hover:text-white">About</a>
+          </div>
+          <div class="px-5 py-2">
+            <a href="#" class="text-base text-gray-300 hover:text-white">Features</a>
+          </div>
+          <div class="px-5 py-2">
+            <a href="#" class="text-base text-gray-300 hover:text-white">Testimonials</a>
+          </div>
+          <div class="px-5 py-2">
+            <a href="#" class="text-base text-gray-300 hover:text-white">Contact</a>
+          </div>
+        </nav>
+        <p class="mt-8 text-center text-base text-gray-400">&copy; 2023 FuturePathMentor. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <!-- Simple JavaScript for mobile menu toggle and theme switching -->
+    <script>
+      function toggleMobileMenu() {
+        const menu = document.getElementById('mobile-menu');
+        menu.classList.toggle('hidden');
+      }
+    </script>
+    <script src="includes/theme-toggle.js"></script>
+  </body>
+</html>
+<div class="bg-white dark:bg-gray-800 py-12">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-4 mt-5">
+      <div class="bg-white dark:bg-gray-700 overflow-hidden shadow rounded-lg">
+        <div class="px-4 py-5 sm:p-6 text-center">
+          <dt class="text-sm font-medium text-gray-500 dark:text-gray-300 truncate">Career Paths</dt>
+          <dd class="mt-1 text-3xl font-semibold text-primary">100+</dd>
+        </div>
+      </div>
+      <div class="bg-white dark:bg-gray-700 overflow-hidden shadow rounded-lg">
+        <div class="px-4 py-5 sm:p-6 text-center">
+          <dt class="text-sm font-medium text-gray-500 dark:text-gray-300 truncate">Success Stories</dt>
+          <dd class="mt-1 text-3xl font-semibold text-primary">1000+</dd>
+        </div>
+      </div>
+      <div class="bg-white dark:bg-gray-700 overflow-hidden shadow rounded-lg">
+        <div class="px-4 py-5 sm:p-6 text-center">
+          <dt class="text-sm font-medium text-gray-500 dark:text-gray-300 truncate">Career Tests</dt>
+          <dd class="mt-1 text-3xl font-semibold text-primary">5+</dd>
+        </div>
+      </div>
+      <div class="bg-white dark:bg-gray-700 overflow-hidden shadow rounded-lg">
+        <div class="px-4 py-5 sm:p-6 text-center">
+          <dt class="text-sm font-medium text-gray-500 dark:text-gray-300 truncate">Expert Insights</dt>
+          <dd class="mt-1 text-3xl font-semibold text-primary">24/7</dd>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
