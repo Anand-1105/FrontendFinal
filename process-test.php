@@ -1,49 +1,6 @@
 <?php
+// Process the aptitude test form submission
 session_start();
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Process aptitude test answers
-    $helping_others = $_POST['helping_others'] ?? 0;
-    $problem_solving = $_POST['problem_solving'] ?? 0;
-    $growth_opportunities = $_POST['growth_opportunities'] ?? 0;
-
-    // Calculate career compatibility scores
-    $career_scores = [
-        'technology' => calculateTechScore($problem_solving, $helping_others, $growth_opportunities),
-        'healthcare' => calculateHealthScore($helping_others, $problem_solving, $growth_opportunities),
-        'business' => calculateBusinessScore($growth_opportunities, $problem_solving, $helping_others),
-        'education' => calculateEducationScore($helping_others, $growth_opportunities, $problem_solving),
-        'engineering' => calculateEngineeringScore($problem_solving, $growth_opportunities, $helping_others)
-    ];
-
-    // Store scores in session
-    $_SESSION['career_scores'] = $career_scores;
-
-    // Redirect to career paths page
-    header('Location: career-paths.php');
-    exit();
-}
-
-function calculateTechScore($problem, $helping, $growth) {
-    return (($problem * 0.5) + ($growth * 0.3) + ($helping * 0.2)) * 20;
-}
-
-function calculateHealthScore($helping, $problem, $growth) {
-    return (($helping * 0.5) + ($problem * 0.3) + ($growth * 0.2)) * 20;
-}
-
-function calculateBusinessScore($growth, $problem, $helping) {
-    return (($growth * 0.5) + ($problem * 0.3) + ($helping * 0.2)) * 20;
-}
-
-function calculateEducationScore($helping, $growth, $problem) {
-    return (($helping * 0.6) + ($growth * 0.2) + ($problem * 0.2)) * 20;
-}
-
-function calculateEngineeringScore($problem, $growth, $helping) {
-    return (($problem * 0.5) + ($growth * 0.3) + ($helping * 0.2)) * 20;
-}
-?>
 require_once 'db-connection.php';
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -149,26 +106,28 @@ function saveQuizResults($answerJson, $quizType, $resultJson) {
         // Prepare statement with correct table structure
         $stmt = $conn->prepare("INSERT INTO quiz_results (user_id, test_type, score, created_at) VALUES (?, ?, ?, NOW())");
         if (!$stmt) {
-            throw new Exception("Prepare failed: " . $conn->error);
+            throw new Exception("Prepare failed: " . ($conn->error ?? 'Unknown error'));
         }
 
         // Bind parameters matching table structure
-        if (!$stmt->bind_param("isd", $userId, $quizType, $score)) {
-            throw new Exception("Binding parameters failed: " . $stmt->error);
+        if (!$stmt->bindParam(1, $userId, PDO::PARAM_INT) || 
+            !$stmt->bindParam(2, $quizType, PDO::PARAM_STR) ||
+            !$stmt->bindParam(3, $score, PDO::PARAM_STR)) {
+            throw new Exception("Binding parameters failed: " . $stmt->errorInfo()[2]);
         }
         
         // Execute statement
         if (!$stmt->execute()) {
-            throw new Exception("Execute failed: " . $stmt->error);
+            throw new Exception("Execute failed: " . $stmt->errorInfo()[2]);
         }
 
         error_log("Quiz results saved successfully for user ID: " . $userId);
-        $conn->close(); // Close the connection
+        $conn = null; // Close the PDO connection by setting it to null
         return true;
     } catch (Exception $e) {
         error_log("Error saving quiz results: " . $e->getMessage());
         if (isset($conn)) {
-            $conn->close(); // Close the connection if it exists
+            $conn = null; // Close the PDO connection by setting it to null
         }
         return false;
     }
